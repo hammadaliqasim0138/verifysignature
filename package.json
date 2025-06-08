@@ -16,7 +16,7 @@
     "typescript": "^4.2.4",
     "bitcoinjs-message": "^2.2.0",
     "bootstrap": "^5.0.0-beta3",
-    "next": "^14.2.26",
+    "next": "^15.2.4",
     "postcss-flexbugs-fixes": "^5.0.2",
     "postcss-preset-env": "^6.7.0",
     "react": "17.0.1",
