@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
+// When NEXT_EXPORT=1 we do a fully-static export (GitHub Pages).
+// Static export does not support runtime headers(), so headers are skipped.
+const isExport = process.env.NEXT_EXPORT === '1';
+
 const nextConfig = {
   basePath: '/VerifySignature',
   assetPrefix: '/VerifySignature/',
@@ -6,7 +10,12 @@ const nextConfig = {
   // Disable source maps in production for security
   productionBrowserSourceMaps: false,
 
+  // Static export configuration (used by `npm run export` for GitHub Pages)
+  ...(isExport ? { output: 'export', distDir: 'VerifySignature' } : {}),
+
   // Security headers (best-effort; enforced by reverse proxy/CDN in production)
+  // Skipped during static export as Next.js does not support headers() with output:'export'
+  ...(isExport ? {} : {
   async headers() {
     return [
       {
@@ -62,6 +71,7 @@ const nextConfig = {
       },
     ];
   },
+  }),
 };
 
 module.exports = nextConfig;
