@@ -10,17 +10,14 @@ export default function Layout({
   children,
   home,
 }: {
-  children: React.ReactNode
-  home?: boolean,
+  children: React.ReactNode;
+  home?: boolean;
 }) {
   return (
     <div className={styles.container}>
       <Head>
         <link rel="icon" href="/VerifySignature/favicon.png" />
-        <meta
-          name="description"
-          content={name}
-        />
+        <meta name="description" content={name} />
         <meta
           property="og:image"
           content={`https://og-image.vercel.app/${encodeURI(
@@ -39,8 +36,8 @@ export default function Layout({
         ) : (
           <>
             <h2 className={utilStyles.headingLg}>
-              <Link href="/">
-                <a className={utilStyles.colorInherit}>{name}</a>
+              <Link href="/" className={utilStyles.colorInherit}>
+                {name}
               </Link>
             </h2>
           </>
@@ -48,14 +45,24 @@ export default function Layout({
       </header>
       <main>{children}</main>
 
-        <br/>
-        <br/>
+      <br />
+      <br />
 
-        <footer className="footer mt-auto py-3 bg-light">
-            <div className="container">
-                <span className="text-muted">This page works offline. <a href={'https://github.com/BlueWallet/VerifySignature'} target={'_blank'}>Fork me on Github!</a></span> <br/>
-            </div>
-        </footer>
+      <footer className="footer mt-auto py-3 bg-light">
+        <div className="container">
+          <span className="text-muted">
+            This page works offline.{' '}
+            <a
+              href="https://github.com/BlueWallet/VerifySignature"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Fork me on Github!
+            </a>
+          </span>
+          <br />
+        </div>
+      </footer>
     </div>
   );
 }
