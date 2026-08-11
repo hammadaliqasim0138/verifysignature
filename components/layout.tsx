@@ -51,7 +51,7 @@ export default function Layout({
 
         <footer className="footer mt-auto py-3 bg-light">
             <div className="container">
-                <span className="text-muted">This page works offline. <a href={'https://github.com/BlueWallet/VerifySignature'} target={'_blank'} rel="noopener noreferrer">Fork me on Github!</a></span> <br/>
+                <span className="text-muted">This page works offline. <a href={'https://github.com/BlueWallet/VerifySignature'} target={'_blank'} rel="noopener noreferrer">Fork me on GitHub!</a></span> <br/>
             </div>
         </footer>
     </div>

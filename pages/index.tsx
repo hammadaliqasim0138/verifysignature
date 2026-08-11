@@ -64,6 +64,8 @@ export default function Home() {
     } catch (error) {
       if (error instanceof Error) {
         console.warn(error.message);
+      } else {
+        console.warn(error);
       }
     }
   };

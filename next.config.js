@@ -13,7 +13,7 @@ const nextConfig = {
           headers: [
             {
               key: 'Strict-Transport-Security',
-              value: 'max-age=31536000; includeSubDomains',
+              value: 'max-age=63072000; includeSubDomains; preload',
             },
             {
               key: 'X-Frame-Options',
@@ -33,14 +33,13 @@ const nextConfig = {
             },
             {
               key: 'Content-Security-Policy-Report-Only',
-              value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' https:; connect-src 'self' https://blockstream.info;",
+              value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://blockstream.info; font-src 'self'; frame-ancestors 'none';",
             },
           ],
         },
       ];
     },
   }),
-  swcMinify: true,
   productionBrowserSourceMaps: false,
   poweredByHeader: false,
 };
