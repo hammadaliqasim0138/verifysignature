@@ -38,16 +38,16 @@ export default function Home() {
     verify();
   }, [a, m, s]);
 
-  const bitcoinMessageVerify = (message, address, signature) => {
+  const bitcoinMessageVerify = (verifyMessage: string, verifyAddress: string, verifySignature: string) => {
     // undefined, true so it can verify Electrum signatures without errors
     try {
-      return bitcoinMessage.verify(message, address, signature, undefined, true);
+      return bitcoinMessage.verify(verifyMessage, verifyAddress, verifySignature, undefined, true);
     } catch (e) {
-      if (e.message === 'checkSegwitAlways can only be used with a compressed pubkey signature flagbyte') {
+      if (e instanceof Error && e.message === 'checkSegwitAlways can only be used with a compressed pubkey signature flagbyte') {
           // If message created with uncompressed private key, it will throw this error
           // in this case we should re-try with checkSegwitAlways flag off
           // node_modules/bitcoinjs-message/index.js:187
-        return bitcoinMessage.verify(message, address, signature);
+        return bitcoinMessage.verify(verifyMessage, verifyAddress, verifySignature);
       }
       throw e;
     }
@@ -56,13 +56,15 @@ export default function Home() {
   const verify = () => {
     setIsVerified(false);
     try {
-      router.push(`/?a=${address}&m=${encodeURIComponent(message)}&s=${encodeURIComponent(signature)}`, null, { shallow: true });
+      router.push(`/?a=${address}&m=${encodeURIComponent(message)}&s=${encodeURIComponent(signature)}`, undefined, { shallow: true });
       const verified = bitcoinMessageVerify(message, address, signature);
       console.log({ message, address, signature, verified });
       setIsVerified(verified);
 
     } catch (error) {
-      console.warn(error.message);
+      if (error instanceof Error) {
+        console.warn(error.message);
+      }
     }
   };
 
