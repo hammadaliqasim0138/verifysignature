@@ -2,7 +2,7 @@ import Head from 'next/head';
 import Layout, { siteTitle } from '../components/layout';
 import utilStyles from '../styles/utils.module.css';
 import useSWR from 'swr';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import bitcoinMessage from 'bitcoinjs-message';
 
@@ -27,17 +27,6 @@ export default function Home() {
 
   const { data, error }: { data?: any, error?: any } = useSWR(`${address}`, addressBalanceFetcher);
 
-  useEffect(() => {
-    verify();
-  }, [address, message, signature]);
-
-  useEffect(() => {
-    if (a) setAddress(String(a));
-    if (m) setMessage(String(m));
-    if (s) setSignature(String(s));
-    verify();
-  }, [a, m, s]);
-
   const bitcoinMessageVerify = (verifyMessage: string, verifyAddress: string, verifySignature: string) => {
     // undefined, true so it can verify Electrum signatures without errors
     try {
@@ -53,7 +42,7 @@ export default function Home() {
     }
   };
 
-  const verify = () => {
+  const verify = useCallback(() => {
     setIsVerified(false);
     try {
       router.push({
@@ -75,7 +64,17 @@ export default function Home() {
         console.warn(error);
       }
     }
-  };
+  }, [address, message, router, signature]);
+
+  useEffect(() => {
+    verify();
+  }, [verify]);
+
+  useEffect(() => {
+    if (a) setAddress(String(a));
+    if (m) setMessage(String(m));
+    if (s) setSignature(String(s));
+  }, [a, m, s]);
 
   return (
     <Layout home>
