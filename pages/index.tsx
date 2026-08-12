@@ -2,7 +2,7 @@ import Head from 'next/head';
 import Layout, { siteTitle } from '../components/layout';
 import utilStyles from '../styles/utils.module.css';
 import useSWR from 'swr';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import bitcoinMessage from 'bitcoinjs-message';
 
@@ -15,10 +15,25 @@ const addressBalanceFetcher = async (address: string) => {
   return await res.json();
 };
 
+const bitcoinMessageVerify = (verifyMessage: string, verifyAddress: string, verifySignature: string) => {
+  // undefined, true so it can verify Electrum signatures without errors
+  try {
+    return bitcoinMessage.verify(verifyMessage, verifyAddress, verifySignature, undefined, true);
+  } catch (e) {
+    if (e instanceof Error && e.message === 'checkSegwitAlways can only be used with a compressed pubkey signature flagbyte') {
+      // If message created with uncompressed private key, it will throw this error
+      // in this case we should re-try with checkSegwitAlways flag off
+      // node_modules/bitcoinjs-message/index.js:187
+      return bitcoinMessage.verify(verifyMessage, verifyAddress, verifySignature);
+    }
+    throw e;
+  }
+};
+
 export default function Home() {
 
-  const router = useRouter();
-  const { a, m, s } = router.query;
+  const { query, push } = useRouter();
+  const { a, m, s } = query;
 
   const [address, setAddress] = useState('');
   const [message, setMessage] = useState('');
@@ -27,44 +42,42 @@ export default function Home() {
 
   const { data, error }: { data?: any, error?: any } = useSWR(`${address}`, addressBalanceFetcher);
 
-  useEffect(() => {
-    verify();
-  }, [address, message, signature]);
-
-  useEffect(() => {
-    if (a) setAddress(String(a));
-    if (m) setMessage(String(m));
-    if (s) setSignature(String(s));
-    verify();
-  }, [a, m, s]);
-
-  const bitcoinMessageVerify = (message, address, signature) => {
-    // undefined, true so it can verify Electrum signatures without errors
-    try {
-      return bitcoinMessage.verify(message, address, signature, undefined, true);
-    } catch (e) {
-      if (e.message === 'checkSegwitAlways can only be used with a compressed pubkey signature flagbyte') {
-          // If message created with uncompressed private key, it will throw this error
-          // in this case we should re-try with checkSegwitAlways flag off
-          // node_modules/bitcoinjs-message/index.js:187
-        return bitcoinMessage.verify(message, address, signature);
-      }
-      throw e;
-    }
-  };
-
-  const verify = () => {
+  const verify = useCallback(() => {
     setIsVerified(false);
     try {
-      router.push(`/?a=${address}&m=${encodeURIComponent(message)}&s=${encodeURIComponent(signature)}`, null, { shallow: true });
+      push({
+        pathname: '/',
+        query: {
+          a: address,
+          m: message,
+          s: signature,
+        },
+      }, undefined, { shallow: true });
       const verified = bitcoinMessageVerify(message, address, signature);
       console.log({ message, address, signature, verified });
       setIsVerified(verified);
 
     } catch (error) {
-      console.warn(error.message);
+      if (error instanceof Error) {
+        console.warn(error.message);
+      } else {
+        console.warn(error);
+      }
     }
-  };
+  }, [address, message, push, signature]);
+
+  useEffect(() => {
+    if (!address && !message && !signature) {
+      return;
+    }
+    verify();
+  }, [address, message, signature, verify]);
+
+  useEffect(() => {
+    if (a) setAddress(String(a));
+    if (m) setMessage(String(m));
+    if (s) setSignature(String(s));
+  }, [a, m, s]);
 
   return (
     <Layout home>

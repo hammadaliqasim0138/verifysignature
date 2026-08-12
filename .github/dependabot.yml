@@ -1,22 +1,24 @@
 version: 2
 updates:
   - package-ecosystem: npm
-    directory: /
+    directory: "/"
     schedule:
       interval: weekly
       day: monday
+      time: "03:00"
     open-pull-requests-limit: 10
-    labels:
-      - dependencies
-    ignore:
-      # Only allow patch/minor for major version locked packages
-      - dependency-name: typescript
-        update-types: [version-update:semver-major]
+    allow:
+      - dependency-type: all
+    commit-message:
+      prefix: "chore(deps)"
+      prefix-development: "chore(deps-dev)"
 
   - package-ecosystem: github-actions
-    directory: /
+    directory: "/"
     schedule:
       interval: weekly
       day: monday
-    labels:
-      - dependencies
+      time: "04:00"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(actions)"
