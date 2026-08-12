@@ -67,8 +67,11 @@ export default function Home() {
   }, [address, message, router, signature]);
 
   useEffect(() => {
+    if (!address && !message && !signature) {
+      return;
+    }
     verify();
-  }, [verify]);
+  }, [address, message, signature, verify]);
 
   useEffect(() => {
     if (a) setAddress(String(a));
