@@ -32,8 +32,8 @@ const bitcoinMessageVerify = (verifyMessage: string, verifyAddress: string, veri
 
 export default function Home() {
 
-  const router = useRouter();
-  const { a, m, s } = router.query;
+  const { query, push } = useRouter();
+  const { a, m, s } = query;
 
   const [address, setAddress] = useState('');
   const [message, setMessage] = useState('');
@@ -45,7 +45,7 @@ export default function Home() {
   const verify = useCallback(() => {
     setIsVerified(false);
     try {
-      router.push({
+      push({
         pathname: '/',
         query: {
           a: address,
@@ -64,7 +64,7 @@ export default function Home() {
         console.warn(error);
       }
     }
-  }, [address, message, router, signature]);
+  }, [address, message, push, signature]);
 
   useEffect(() => {
     if (!address && !message && !signature) {
