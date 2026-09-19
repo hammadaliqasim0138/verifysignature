@@ -6,7 +6,7 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "build": "next build",
-    "export": "rm -r -f VerifySignature; rm -r -f .next; rm -r -f _next; next build && next export -o VerifySignature; mv VerifySignature/* ./",
+    "export": "rm -rf VerifySignature .next _next && NEXT_EXPORT=1 next build && mv VerifySignature/* ./ && rm -rf VerifySignature .next",
     "start": "next start"
   },
   "dependencies": {
