@@ -24,7 +24,7 @@
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.32",
     "postcss-flexbugs-fixes": "^5.0.2",
-    "postcss-preset-env": "^9.6.0",
+    "postcss-preset-env": "^11.6.1",
     "typescript": "^5.4.5"
   }
 }
